@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5262b9bf0c8a1e42831c31af09fbebf, type: 3}
+  m_Name: BattleManager
+  m_EditorClassIdentifier: 
+  DefenderPlayerNumber: 0
+  AttackerPlayerNumber: 0
+  DefenderMeleeField: {fileID: 0}
+  DefenderRangedField: {fileID: 0}
+  DefenderArtilleryField: {fileID: 0}
+  AttackerMeleeField: {fileID: 0}
+  AttackerRangedField: {fileID: 0}
+  AttackerArtilleryField: {fileID: 0}
