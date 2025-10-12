@@ -9,7 +9,10 @@ using UnityEngine.Rendering.VirtualTexturing;
 public class SpellSOEditor : Editor
 {
     private SerializedProperty spellEffectsProp;
+    private SerializedProperty targetFilterProp;
+
     private Dictionary<string, Type> effectTypes;
+    private Dictionary<string, Type> filterTypes;
 
     private void OnEnable()
     {
@@ -20,19 +23,55 @@ public class SpellSOEditor : Editor
             .SelectMany(x => x.GetTypes())
             .Where(y => typeof(SpellEffect).IsAssignableFrom(y) && !y.IsAbstract)
             .ToDictionary(y => y.Name, y => y);
-    }
 
+
+        targetFilterProp = serializedObject.FindProperty("TargetFilter");
+        //Найдем всех наследников TargetFilter'а
+        filterTypes = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(x => x.GetTypes())
+            .Where(y => typeof(TargetFilter).IsAssignableFrom(y) && !y.IsAbstract)
+            .ToDictionary(y => y.Name, y => y);
+        
+    }
+    
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
 
-        spellEffectsProp ??= serializedObject.FindProperty("SpellEffects");
-
-        //Выпишем все переменные SpellSO кроме SpellEffects
+        //Выпишем все переменные SpellSO кроме SpellEffects и TargetFilter
         DrawPropertiesExcluding(serializedObject, "SpellEffects");
 
         EditorGUILayout.Space();
+        
+        EditorGUILayout.LabelField("Target Filter", EditorStyles.boldLabel);
+        targetFilterProp ??= serializedObject.FindProperty("TargetFilter");
+
+        //Поле добавления фильтра
+        EditorGUILayout.BeginHorizontal("box");
+        EditorGUILayout.LabelField("Filter Type", EditorStyles.boldLabel);
+        string typeName = targetFilterProp.managedReferenceValue == null ? "None" : targetFilterProp.managedReferenceValue.ToString();
+        if (GUILayout.Button(typeName))
+        {
+            GenericMenu menu = new GenericMenu();
+            foreach (var keyValuePair in filterTypes)
+            {
+                menu.AddItem(new GUIContent(keyValuePair.Key), false, () =>
+                {
+                    targetFilterProp.managedReferenceValue = Activator.CreateInstance(keyValuePair.Value);
+                    serializedObject.ApplyModifiedProperties();
+                });
+            }
+            menu.ShowAsContext();
+        }
+        serializedObject.ApplyModifiedProperties();
+
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.Space();
+        
+
+        EditorGUILayout.Space();
         EditorGUILayout.LabelField("Spell Effects", EditorStyles.boldLabel);
+        spellEffectsProp ??= serializedObject.FindProperty("SpellEffects");
 
         //Выпишем все значения эффектов
         for (int i = 0; i < spellEffectsProp.arraySize; i++)
@@ -93,6 +132,7 @@ public class SpellSOEditor : Editor
             }
             menu.ShowAsContext();
         }
+
         serializedObject.ApplyModifiedProperties();
     }
 }

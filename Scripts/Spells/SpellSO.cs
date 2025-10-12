@@ -3,27 +3,21 @@ using HolyWar.Fields;
 using HolyWar.Units;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu]
 public class SpellSO : ScriptableObject
 {
+    public string SpellName;
     public bool Icon;
     public int ManaCost;
-    public int Cooldown;
+    public float Cooldown;
     public bool IsFriendly;
-    public TargetFilter TargetFilter;
-    public List<FieldRange> FieldPriority = new();
+    [SerializeReference] public TargetFilter TargetFilter;
+    public List<FieldRange> FieldPriority = new(3);
     [SerializeReference] public List<SpellEffect> SpellEffects = new();
 
-    private BattleManager _battleManager;
-
-    public void Init(BattleManager bm)
-    { 
-        _battleManager = bm;
-    }
 
     private void OnValidate()
     {
@@ -42,13 +36,14 @@ public class SpellSO : ScriptableObject
         }
     }
 
-    public void Cast(int casterPlayerNumber, int spellPower)
+    public bool Cast(int casterPlayerNumber, int spellPower, BattleManager battleManager)
     {
         foreach (var fieldType in FieldPriority)
         {
             //Пройдемся по всем полям в порядке приоритета и посмотрим, есть ли у них подходящие для каста юниты
             int playerNumberTarget;
-            if (TargetFilter.IsFriendly)
+
+            if (IsFriendly)
             {
                 playerNumberTarget = casterPlayerNumber;
             }
@@ -56,7 +51,8 @@ public class SpellSO : ScriptableObject
             { 
                 playerNumberTarget = Math.Abs(casterPlayerNumber - 1);
             }
-            var fieldUnits = _battleManager.GetField(playerNumberTarget, fieldType).Item1;
+
+            var fieldUnits = battleManager.GetField(playerNumberTarget, fieldType).Item1;
 
             //Отфильтруем найденных юнитов по заданным параметрам
             if (TargetFilter.IsFindTarget(fieldUnits, out List<BaseUnit> targetUnits))
@@ -69,9 +65,11 @@ public class SpellSO : ScriptableObject
                 }
 
                 //Эффект заклинания выполнен, прерываем цикл
-                return;
+                return true;
             }
         }
+        Debug.Log($"Didn't find targets for spell {this.name}");
+        return false;
     }
 
 

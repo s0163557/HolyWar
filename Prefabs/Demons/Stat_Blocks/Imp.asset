@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Imp
   m_EditorClassIdentifier: 
   MaxHealth: 75
-  MaxMana: 150
+  SpellPower: 0
+  MaxMana: 100
+  ManaRegeneration: 20
   MinAttackValue: 5
   MaxAttackValue: 25
   AttackSpeed: 2

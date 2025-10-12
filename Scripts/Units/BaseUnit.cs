@@ -5,22 +5,33 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.VersionControl.Asset;
 
 namespace HolyWar.Units
 {
     public class BaseUnit : MonoBehaviour
     {
         public BaseStats Stats;
-
-        [SerializeField] private int CurrentHealth;
+        [SerializeField] public int CurrentHealth { private set; get; }
         [SerializeField] private int CurrentMana;
 
         [SerializeField] private List<SpellSO> Spells = new();
+
+        [Flags]
+        public enum UnitState
+        {
+            None = 0,
+            Damaged = 1 << 1,
+            Dead = 1 << 2,
+        }
+
+        public UnitState States { private set; get; }
 
         public int OppositePlayerNumber;
         public string UnitName;
         private BattleManager _battleManager;
         private BaseUnit _target;
+
 
         private HealthBar _healthBar;
 
@@ -38,54 +49,49 @@ namespace HolyWar.Units
         }
 
         public Action<BaseUnit> OnKilled;
-        public Action<BaseUnit> OnHealthChanged;
 
-        private bool _isDead = false;
-
-        public bool IsDead { get { return _isDead; } }
-
-        public int GetCurrentHealth()
-        { 
-            return CurrentHealth;
-        }
 
         public void TakeHeal(int heal)
         {
-            if (!_isDead)
+            //Если юнит не мёртв - применяем хилл
+            if ((States & UnitState.Dead) == 0)
             {
                 CurrentHealth += heal;
-                if (CurrentHealth > Stats.MaxHealth)
+                if (CurrentHealth >= Stats.MaxHealth)
+                {
                     CurrentHealth = Stats.MaxHealth;
+                    //Уберём статус того что юнит продамажен
+                    States &= ~UnitState.Damaged;
+                }
 
                 Debug.Log($"{name} recieving {heal} heal, remain {CurrentHealth} hp");
                 FloatingTextSystem.CreateFloatingText(transform.position, "+ " + heal.ToString(), FloatingTextSystem.TextColors.Green);
 
                 _healthBar.SetHealth(CurrentHealth, Stats.MaxHealth);
-                OnHealthChanged.Invoke(this);
             }
         }
 
         public void TakeDamage(int damage)
         {
             CurrentHealth -= damage;
+            //Добавим статус того, что юнит продамажен
+            States |= UnitState.Damaged;
             Debug.Log($"{name} taking {damage} damage, remain {CurrentHealth} hp");
             FloatingTextSystem.CreateFloatingText(transform.position, "- " + damage.ToString(), FloatingTextSystem.TextColors.Red);
 
             _healthBar.SetHealth(CurrentHealth, Stats.MaxHealth);
 
-            if (CurrentHealth <= 0 && _isDead == false)
+            if (CurrentHealth <= 0 && (States & UnitState.Dead) == 0)
             {
-                //Нам нужно отдельно объявить isDead чтобы запоздавшие юниты, которые ещё атакуют нашу цель, не запустили метод вновь.
-                _isDead = true;
+                //Нам нужно отдельно объявить статус Dead чтобы запоздавшие юниты, которые ещё атакуют нашу цель, не запустили метод вновь.
+                States |= UnitState.Dead;
                 StartDying();
-                return;
             }
-
-            OnHealthChanged.Invoke(this);
         }
 
         private void StartDying()
         {
+            StopAllCoroutines();
             _isDying = true;
             _dyingFrameCounter = _amountOfDyingFrames;
 
@@ -103,9 +109,6 @@ namespace HolyWar.Units
             //Это нуджно дл ситуаций, когда два юнита атакуют одновременно, и хоть технически это невозможно
             //по правилам игры было бы справедливо, чтобы юнит успел за пару последний фреймов своей жизни првоести свою атаку.
             Debug.Log($"Unit {gameObject.name} is dead completely");
-
-            OnKilled = null;
-            OnHealthChanged = null;
 
             //Остановим атаку
             CancelInvoke(nameof(InflictDamage));
@@ -130,30 +133,41 @@ namespace HolyWar.Units
 
         //Главная проблема - понять куда именно колдовать спелл. Для этого у самого спелла есть переменные на определение полей и на определение того, должны лы они быть дружественными
         //или вражескими.
-        private void CastSpell(SpellSO spell)
+        private System.Collections.IEnumerator CastSpell(SpellSO spell)
         {
-            if (spell.IsFriendly)
+            while (true)
             {
-                //Смерть всего хорошего, ждём нормальное лобби
-                var currentPlayerNumber = Math.Abs(OppositePlayerNumber - 1);
-                foreach (var accordingField in spell.FieldPriority)
+                //Проверим, хватает ли маны на каст спелла
+                if (CurrentMana >= spell.ManaCost)
                 {
-                    var friendlyField = _battleManager.GetField(currentPlayerNumber, accordingField);
-
+                    Debug.Log($"Unit {name} using spell {spell.name}");
+                    if (spell.Cast(Math.Abs(OppositePlayerNumber - 1), Stats.SpellPower, _battleManager))
+                    {
+                        //Если каст прошёл успешно, отнимаем ману и пробиваем классический кулдаун
+                        CurrentMana -= spell.ManaCost;
+                        yield return new WaitForSeconds(spell.Cooldown);
+                    }
+                    else
+                    {
+                        //Если каст не совершён, делаем небольшую задержку перед новым поиском
+                        yield return new WaitForSeconds(0.1f);
+                    }
                 }
-            }
-            else
-            {
-
+                else
+                {
+                    //Если маны нет, то встаём на более долгое ожидание, вдруг кто-то её восполнит в бою.
+                    yield return new WaitForSeconds(0.5f);
+                }
             }
         }
 
         private void BattleStartListener()
         {
+            _battleManager = FindAnyObjectByType<BattleManager>();
+
             CurrentHealth = Stats.MaxHealth;
-            CurrentMana = Stats.MaxMana;
             _isDying = false;
-            _isDead = false;
+            States = UnitState.None;
 
             _healthBar.ShowHealtbar();
             _healthBar.SetHealth(CurrentHealth, Stats.MaxHealth);
@@ -161,17 +175,19 @@ namespace HolyWar.Units
             //Поставим все заклинания на реуглярный каст
             foreach (var spell in Spells)
             {
-                CastSpell(spell);
+                StartCoroutine(CastSpell(spell));
             }
 
-            _battleManager = FindAnyObjectByType<BattleManager>();
             _battleManager.AddUnitToTeam(Mathf.Abs(OppositePlayerNumber - 1));
             BattleProcess(null);
         }
 
         private void BattleEndListener()
         {
+            //Восстановим ману после окончания боя, чтоб было корректное понимание во время планирования
+            CurrentMana += Stats.ManaRegeneration;
             _healthBar.HideHealtbar();
+            StopAllCoroutines();
             CancelInvoke(nameof(InflictDamage));
             gameObject.GetComponent<SpriteRenderer>().enabled = true;
         }
@@ -220,7 +236,7 @@ namespace HolyWar.Units
 
         private void InflictDamage()
         {
-            if (_target == null || _target.IsDead)
+            if (_target == null || (_target.States & UnitState.Dead) != 0)
             {
                 //Если наша текущая цель мертва или не найдена - ищем новую
                 CancelInvoke(nameof(InflictDamage));

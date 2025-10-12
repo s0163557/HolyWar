@@ -1,5 +1,7 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using static HolyWar.FloatText.FloatingTextSystem;
 
 namespace HolyWar.FloatText
 {
@@ -7,6 +9,8 @@ namespace HolyWar.FloatText
     {
         protected bool free;
         public bool IsFree { get {return free; } }
+
+        public TextColors TextColor;
 
         [SerializeField]
         protected float floatingTime = 5f;

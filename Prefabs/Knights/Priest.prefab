@@ -101,6 +101,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Stats: {fileID: 11400000, guid: 95006fe7206de0347982209bdf577a2e, type: 2}
-  CurrentHealth: 0
   CurrentMana: 0
-  OppositePlayerNumber: 0
+  Spells:
+  - {fileID: 11400000, guid: 766a8fcadc83dae459f200ac8b5e8128, type: 2}
+  OppositePlayerNumber: 1
+  UnitName: 

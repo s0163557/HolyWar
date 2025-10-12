@@ -117,13 +117,7 @@ namespace HolyWar.Fields
             {
                 //Добавим прослушку на юнитов, находящихся на поле боя.
                 unit.OnKilled += RemoveKilledUnit;
-                unit.OnHealthChanged += HealthChangeListener;
             }
-        }
-
-        public void HealthChangeListener(BaseUnit target)
-        { 
-            
         }
 
         public void BattleEndListener()
@@ -187,12 +181,6 @@ namespace HolyWar.Fields
                     mainUnits[i].transform.position = new Vector3(mainUnits[i].XCoord, mainY);
                 }
             }
-        }
-
-        private List<BaseUnit> damagedUnits = new List<BaseUnit>();
-        public List<BaseUnit> GetDamagedUnits()
-        {
-            return damagedUnits;
         }
 
         public void RegisterUnitToMain(BaseUnit unit)

@@ -189,6 +189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e47ad2186d8c9d24e855c4d7f285561e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TextColor: 2
   floatingTime: 2
   startColor: {r: 0, g: 0.39215687, b: 0, a: 1}
   endColor: {r: 0, g: 0.39215687, b: 0, a: 0}

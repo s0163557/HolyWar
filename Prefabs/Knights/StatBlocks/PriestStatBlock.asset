@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: PriestStatBlock
   m_EditorClassIdentifier: 
   MaxHealth: 120
-  MaxMana: 20
+  SpellPower: 10
+  MaxMana: 80
+  ManaRegeneration: 30
   MinAttackValue: 20
   MaxAttackValue: 40
   AttackSpeed: 2.5

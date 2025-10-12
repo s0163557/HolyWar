@@ -19,7 +19,9 @@ public class DamagePerTimeEffect : SpellEffect
     {
         for (int i = 0; i < _ticksAmount; i++)
         {
+            //Наносим урон с константой спелл павера
             target.TakeDamage(_baseDamageValue + spellPower);
+            //Встаём на ожидание следующего тика
             yield return new WaitForSeconds(_tickInterval);
         }
     }

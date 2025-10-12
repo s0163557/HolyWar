@@ -12,9 +12,6 @@ namespace Assets.Scripts.Spells.Effects
     [RequireComponent(typeof(BaseUnit))]
     internal class SpellEffectRunner : MonoBehaviour
     {
-        //Корутина, которая реализовывает эффект
-        protected Coroutine _effectCoroutine;
-        protected List<Coroutine> _effects;
 
         private void Start()
         {
@@ -31,11 +28,7 @@ namespace Assets.Scripts.Spells.Effects
 
         private void StopAllEffects(BaseUnit target)
         {
-            foreach (var effect in _effects)
-            {
-                StopCoroutine(effect);
-            }
-
+            StopAllCoroutines();
             target.OnKilled -= StopAllEffects;
         }
 

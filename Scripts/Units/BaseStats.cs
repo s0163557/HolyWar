@@ -9,6 +9,8 @@ namespace HolyWar.Units
     public class BaseStats : ScriptableObject
     {
         public int MaxHealth;
+
+        public int SpellPower;
         public int MaxMana;
         public int ManaRegeneration;
 
