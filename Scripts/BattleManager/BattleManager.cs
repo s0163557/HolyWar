@@ -8,6 +8,7 @@ using UnityEngine;
 public class BattleManager : MonoBehaviour
 {
     //Нужно сделать их инициализацию более надёжной, чем через инспектор. В идеале отдельный класс игрока, к которому они будут просто обращаться.
+
     [SerializeField]
     protected int DefenderPlayerNumber;
     [SerializeField]
@@ -36,6 +37,19 @@ public class BattleManager : MonoBehaviour
     protected Player[] Players
     {
         get { return players == null ? players = FindObjectsByType<Player>(FindObjectsSortMode.InstanceID) : players; }
+    }
+
+    //При инициализации bm должен будет пробежаться по всем игрокам, и поставить игрока на 0 место, а всех ИИшек распихать по своему усмотрению
+    //Менять игроков скорее всего будут триггеры. Надо привязать юнитов по-отдельности к каждому игроку, и чтоб на начало боя они выставлялись сами. 
+    private byte _currentOpponentNumber;
+    public byte GetOpponentNumber()
+    {
+        return _currentOpponentNumber;
+    }
+
+    public void ChangeOpponents()
+    { 
+        
     }
 
     public void Awake()
@@ -88,7 +102,6 @@ public class BattleManager : MonoBehaviour
         player = Players[number];
         return true;
     }
-
 
     public void AddUnitToTeam(int team)
     {

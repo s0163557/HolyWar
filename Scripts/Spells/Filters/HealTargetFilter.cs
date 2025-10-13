@@ -10,14 +10,13 @@ using HolyWar.Units;
 /// </summary>
 internal class HealTargetFilter : TargetFilter
 {
-    public override bool IsFriendly => true;
 
     public override bool IsFindTarget(IEnumerable<BaseUnit> fieldUnits, out List<BaseUnit> targetUnits)
     {
         BaseUnit? minHpUnit = null;
         foreach (var unit in fieldUnits)
         {
-            if (unit.GetCurrentHealth() != unit.Stats.MaxHealth && unit.GetCurrentHealth() < minHpUnit.GetCurrentHealth())
+            if (unit.CurrentHealth != unit.Stats.MaxHealth && unit.CurrentHealth < minHpUnit.CurrentHealth)
             { 
                 minHpUnit = unit;
             }

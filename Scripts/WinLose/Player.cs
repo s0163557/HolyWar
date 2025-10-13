@@ -8,11 +8,13 @@ namespace HolyWar.Diplomacy
         [SerializeField]
         protected string playerName;
         [SerializeField]
-        protected int points;
+        protected byte points;
         [SerializeField]
         protected Color teamColor;
         [SerializeField]
         protected EconomyConfigSO economyConfig;
+
+        public byte PlayerNumber;
 
         [System.NonSerialized] private Wallet _wallet;
 
@@ -26,7 +28,7 @@ namespace HolyWar.Diplomacy
         public int CurrentWinReward;
 
         public string PlayerName { get { return playerName; } set { playerName = value; } }
-        public int Points { get { return points; } set { points = value; } }
+        public byte Points { get { return points; } set { points = value; } }
         public Color TeamColor { get { return teamColor; } set { teamColor = value; } }
 
         protected void Start()
@@ -68,7 +70,7 @@ namespace HolyWar.Diplomacy
             return Wallet.TrySpend(cost);
         }
 
-        public void AddPoint(int points)
+        public void AddPoint(byte points)
         {
             this.points += points;
             EventBus.RaiseEvent(EventBus.EventsEnum.PlayerGetsPoint);
