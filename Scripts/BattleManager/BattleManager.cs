@@ -7,13 +7,6 @@ using UnityEngine;
 
 public class BattleManager : MonoBehaviour
 {
-    //Нужно сделать их инициализацию более надёжной, чем через инспектор. В идеале отдельный класс игрока, к которому они будут просто обращаться.
-
-    [SerializeField]
-    protected int DefenderPlayerNumber;
-    [SerializeField]
-    protected int AttackerPlayerNumber;
-
     [SerializeField]
     protected Field DefenderMeleeFieldScript;
     [SerializeField]
@@ -30,7 +23,7 @@ public class BattleManager : MonoBehaviour
 
     protected List<Field> FieldsList;
 
-    private Dictionary<(int, FieldRange), Field> fieldDictionary = new Dictionary<(int, FieldRange), Field>();
+    private Dictionary<(Player, FieldRange), Field> fieldDictionary = new Dictionary<(Player, FieldRange), Field>();
     protected List<int> numberOfUnits;
 
     private Player[] players;
@@ -39,17 +32,47 @@ public class BattleManager : MonoBehaviour
         get { return players == null ? players = FindObjectsByType<Player>(FindObjectsSortMode.InstanceID) : players; }
     }
 
-    //При инициализации bm должен будет пробежаться по всем игрокам, и поставить игрока на 0 место, а всех ИИшек распихать по своему усмотрению
-    //Менять игроков скорее всего будут триггеры. Надо привязать юнитов по-отдельности к каждому игроку, и чтоб на начало боя они выставлялись сами. 
-    private byte _currentOpponentNumber;
-    public byte GetOpponentNumber()
+    private Player HumanPlayer;
+    private Player AIOpponent;
+
+    public Player GetOpponent(Player requestingPlayer)
     {
-        return _currentOpponentNumber;
+        //Логика проста - в битве учавствует только двое игроков - человек и ИИ. Значит противником человека будет ИИ, а противником ИИ будет человек.
+        //Нужно будет подумать о возможности раширения этого подхода. Что если я хочу, чтобы мой ИИ оппонент был не один, а несколько? И каждый из них
+        //симулировал бы бой с волной и развивался бы от этих результатов. 
+        return requestingPlayer == HumanPlayer? AIOpponent : HumanPlayer;
     }
 
-    public void ChangeOpponents()
-    { 
-        
+    private void ChangeOpponents(Player newOpponent)
+    {
+        AIOpponent = newOpponent;
+    }
+
+    private void SortPlayers()
+    {
+        //Проверим что у нас точно один игрок
+        var humans = Players.Where(p => p.PlayerType == PlayerType.Human).ToArray();
+
+        //Для дебага
+        switch (humans.Length)
+        {
+            case 0:
+                throw new System.Exception("[Game Rule] There is no human player in the scene! BattleManager supports only one human player!");
+
+            case > 1:
+                throw new System.Exception("[Game Rule] There is too much human players in the scene! BattleManager supports only one human player!");
+        }
+
+        var AIs = Players.Where(p => p.PlayerType == PlayerType.AI).ToArray();
+        if (AIs.Length == 0)
+        {
+            throw new System.Exception("[Game Rule] There is not enough AI players in the scene! BattleManager supports at least one AI player!");
+        }
+
+        HumanPlayer = humans.First();
+
+        //По умолчанию выставим противником любого ИИ, который попадётся первым
+        AIOpponent = AIs.First();
     }
 
     public void Awake()
@@ -63,49 +86,39 @@ public class BattleManager : MonoBehaviour
         AttackerRangedFieldScript.FieldRange = FieldRange.Ranged;
         AttackerArtilleryFieldScript.FieldRange = FieldRange.Artillery;
 
-        //Полезно иметь все поля в одном списке
-        fieldDictionary.Add((DefenderPlayerNumber, FieldRange.Melee), DefenderMeleeFieldScript);
-        fieldDictionary.Add((DefenderPlayerNumber, FieldRange.Ranged), DefenderRangedFieldScript);
-        fieldDictionary.Add((DefenderPlayerNumber, FieldRange.Artillery), DefenderArtilleryFieldScript);
+        //Так же удостоверимс, что у полей правильные позиции
+        DefenderMeleeFieldScript.FieldPositionType = FieldPositionType.Defender;
+        DefenderRangedFieldScript.FieldPositionType = FieldPositionType.Defender;
+        DefenderArtilleryFieldScript.FieldPositionType = FieldPositionType.Defender;
 
-        fieldDictionary.Add((AttackerPlayerNumber, FieldRange.Melee), AttackerMeleeFieldScript);
-        fieldDictionary.Add((AttackerPlayerNumber, FieldRange.Ranged), AttackerRangedFieldScript);
-        fieldDictionary.Add((AttackerPlayerNumber, FieldRange.Artillery), AttackerArtilleryFieldScript);
+        AttackerMeleeFieldScript.FieldPositionType = FieldPositionType.Attacker;
+        AttackerRangedFieldScript.FieldPositionType = FieldPositionType.Attacker;
+        AttackerArtilleryFieldScript.FieldPositionType = FieldPositionType.Attacker;
+
+        //Определим всё ли нормально с игроками - должен быть ровно один игрок-человек и хотя бы один противник ИИ.
+        SortPlayers();
+
+        //Полезно иметь все поля в одном списке
+        fieldDictionary.Add((HumanPlayer, FieldRange.Melee), DefenderMeleeFieldScript);
+        fieldDictionary.Add((HumanPlayer, FieldRange.Ranged), DefenderRangedFieldScript);
+        fieldDictionary.Add((HumanPlayer, FieldRange.Artillery), DefenderArtilleryFieldScript);
+
+        fieldDictionary.Add((AIOpponent, FieldRange.Melee), AttackerMeleeFieldScript);
+        fieldDictionary.Add((AIOpponent, FieldRange.Ranged), AttackerRangedFieldScript);
+        fieldDictionary.Add((AIOpponent, FieldRange.Artillery), AttackerArtilleryFieldScript);
 
         numberOfUnits = new List<int>();
-    }
 
-    public bool GetPlayerNumberByField(Field field, out int playerNumber)
-    {
-        foreach (var keyValuePair in fieldDictionary)
-        {
-            if (keyValuePair.Value == field)
-            {
-                playerNumber = keyValuePair.Key.Item1;
-                return true;
-            }
-        }
-
-        playerNumber = -1;
-        return false;
-    }
-
-    public bool TryGetPlayerByNumber(int number, out Player player)
-    {
-        //Смерть всего хорошего
-        if (number > Players.Length || number < 0)
-        {
-            player = null;
-            return false;
-        }
-
-        player = Players[number];
-        return true;
     }
 
     public void AddUnitToTeam(int team)
     {
         numberOfUnits[team] += 1;
+    }
+
+    public int AssignPlayerToSide(Player player, FieldPositionType fieldPositionType)
+    {
+
     }
 
     public void RemoveUnitFromTeam(int team)
@@ -140,9 +153,9 @@ public class BattleManager : MonoBehaviour
     /// <param name="playerNumber"></param>
     /// <param name="fieldToAttack"></param>
     /// <returns>Список юнитов и их количество</returns>
-    public (IEnumerable<BaseUnit>, int) GetField(int playerNumber, FieldRange fieldToInteract)
+    public (IEnumerable<BaseUnit>, int) GetField(Player player, FieldRange fieldToInteract)
     {
-        fieldDictionary.TryGetValue((playerNumber, fieldToInteract), out var field);
+        fieldDictionary.TryGetValue((player, fieldToInteract), out var field);
         if (field != null)
             return (field.MainUnits, field.MainUnits.Count);
         else

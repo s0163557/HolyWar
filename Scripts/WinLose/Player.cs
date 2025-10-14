@@ -1,8 +1,17 @@
 using UnityEngine;
 using System;
+using NUnit.Framework;
+using HolyWar.Units;
+using System.Collections.Generic;
 
 namespace HolyWar.Diplomacy
 {
+    public enum PlayerType
+    {
+        Human = 0,
+        AI = 1,
+    }
+
     public class Player : MonoBehaviour
     {
         [SerializeField]
@@ -11,8 +20,16 @@ namespace HolyWar.Diplomacy
         protected byte points;
         [SerializeField]
         protected Color teamColor;
+
         [SerializeField]
         protected EconomyConfigSO economyConfig;
+
+        //Каждый игрок сам хранит информацию о своих юнитах
+        public List<BaseUnit> MeleeUnits = new List<BaseUnit>();
+        public List<BaseUnit> RangedUnits = new List<BaseUnit>();
+        public List<BaseUnit> ArtilleryUnits = new List<BaseUnit>();
+
+        public PlayerType PlayerType;
 
         public byte PlayerNumber;
 

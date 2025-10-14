@@ -1,3 +1,4 @@
+using HolyWar.Diplomacy;
 using HolyWar.Fields;
 using HolyWar.FloatText;
 using System;
@@ -17,6 +18,8 @@ namespace HolyWar.Units
 
         [SerializeField] private List<SpellSO> Spells = new();
 
+        public Player Owner;
+
         [Flags]
         public enum UnitState
         {
@@ -27,11 +30,9 @@ namespace HolyWar.Units
 
         public UnitState States { private set; get; }
 
-        public int OppositePlayerNumber;
         public string UnitName;
         private BattleManager _battleManager;
         private BaseUnit _target;
-
 
         private HealthBar _healthBar;
 

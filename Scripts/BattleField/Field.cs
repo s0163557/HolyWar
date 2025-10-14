@@ -2,6 +2,7 @@ using HolyWar.Units;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace HolyWar.Fields
 {
@@ -19,6 +20,12 @@ namespace HolyWar.Fields
         Artillery = 3,
     }
 
+    public enum FieldPositionType
+    { 
+        Attacker = 0,
+        Defender = 1,
+    }
+
     public class Field : MonoBehaviour
     {
         [SerializeField]
@@ -33,6 +40,7 @@ namespace HolyWar.Fields
         protected List<Material> typeMats;
         [SerializeField]
         protected FieldType fieldType;
+
         [SerializeField]
         protected bool inAction;
 
@@ -45,7 +53,6 @@ namespace HolyWar.Fields
         [SerializeField]
         protected float auxY;
 
-
         [SerializeField]
         protected List<BaseUnit> mainUnits;
         [SerializeField]
@@ -56,7 +63,11 @@ namespace HolyWar.Fields
 
         private List<BaseUnit> _killedUnits;
 
+        //Не сериализуем эти типы, потому что они будут автоматически назначены в BattleManager при создании поля.
+        [NonSerialized]
         public FieldRange FieldRange;
+        [NonSerialized]
+        public FieldPositionType FieldPositionType;
 
         protected MeshRenderer mainRenderer;
         protected MeshRenderer auxRenderer;
