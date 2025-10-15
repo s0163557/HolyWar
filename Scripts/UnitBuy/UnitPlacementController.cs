@@ -119,18 +119,11 @@ public class UnitPlacementController : MonoBehaviour
         var instantiatedUnit = Instantiate(_selectedPrefab);
         var unitComponent = instantiatedUnit.GetComponent<BaseUnit>();
 
-        //Совершенно ублюдское решение, надо будет потом переделать.
-        if (_battleManager.GetPlayerNumberByField(field, out int playerNumber))
-            unitComponent.OppositePlayerNumber = Mathf.Abs(playerNumber - 1);
-
-        if (_battleManager.TryGetPlayerByNumber(playerNumber, out Player player))
+        if (!unitComponent.Owner.TrySpend(unitComponent.Stats.Cost))
         {
-            if (!player.TrySpend(unitComponent.Stats.Cost))
-            { 
-                //Если денег не хватило - пробиваем отмену.
-                Destroy(instantiatedUnit);
-                return;
-            }
+            //Если денег не хватило - пробиваем отмену.
+            Destroy(instantiatedUnit);
+            return;
         }
 
         field.RegisterUnitToMain(unitComponent);

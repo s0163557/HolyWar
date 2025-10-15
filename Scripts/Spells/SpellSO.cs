@@ -1,4 +1,5 @@
 using Assets.Scripts.Spells.Effects;
+using HolyWar.Diplomacy;
 using HolyWar.Fields;
 using HolyWar.Units;
 using System;
@@ -36,23 +37,20 @@ public class SpellSO : ScriptableObject
         }
     }
 
-    public bool Cast(int casterPlayerNumber, int spellPower, BattleManager battleManager)
+    public bool Cast(Player casterPlayer, int spellPower, BattleManager battleManager)
     {
         foreach (var fieldType in FieldPriority)
         {
             //Пройдемся по всем полям в порядке приоритета и посмотрим, есть ли у них подходящие для каста юниты
-            int playerNumberTarget;
 
-            if (IsFriendly)
+            Player targetPlayer = casterPlayer;
+            //Если заклинание враждебное, то цель - оппонент кастующего
+            if (!IsFriendly)
             {
-                playerNumberTarget = casterPlayerNumber;
-            }
-            else
-            { 
-                playerNumberTarget = Math.Abs(casterPlayerNumber - 1);
+                targetPlayer = battleManager.GetOpponent(casterPlayer);
             }
 
-            var fieldUnits = battleManager.GetField(playerNumberTarget, fieldType).Item1;
+            var fieldUnits = battleManager.GetFieldUnits(targetPlayer, fieldType).Item1;
 
             //Отфильтруем найденных юнитов по заданным параметрам
             if (TargetFilter.IsFindTarget(fieldUnits, out List<BaseUnit> targetUnits))

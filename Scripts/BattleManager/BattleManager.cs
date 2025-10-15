@@ -4,6 +4,7 @@ using HolyWar.Diplomacy;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Assets.Tools;
 
 public class BattleManager : MonoBehaviour
 {
@@ -23,8 +24,13 @@ public class BattleManager : MonoBehaviour
 
     protected List<Field> FieldsList;
 
-    private Dictionary<(Player, FieldRange), Field> fieldDictionary = new Dictionary<(Player, FieldRange), Field>();
-    protected List<int> numberOfUnits;
+    private Dictionary<FieldRange, Field> _attackerFieldsDictionary = new Dictionary<FieldRange, Field>();
+    private Dictionary<FieldRange, Field> _defenderFieldsDictionary = new Dictionary<FieldRange, Field>();
+
+    private Dictionary<FieldPositionType, Dictionary<FieldRange, Field>> _positionToFieldsDictionary = new Dictionary<FieldPositionType, Dictionary<FieldRange, Field>>();
+    private BiDictionary<Player, FieldPositionType> _playerToPositionBiDictionary = new BiDictionary<Player, FieldPositionType>();
+
+    protected Dictionary<Player, int> numberOfUnitsByPlayerDictionary;
 
     private Player[] players;
     protected Player[] Players
@@ -40,7 +46,7 @@ public class BattleManager : MonoBehaviour
         //Логика проста - в битве учавствует только двое игроков - человек и ИИ. Значит противником человека будет ИИ, а противником ИИ будет человек.
         //Нужно будет подумать о возможности раширения этого подхода. Что если я хочу, чтобы мой ИИ оппонент был не один, а несколько? И каждый из них
         //симулировал бы бой с волной и развивался бы от этих результатов. 
-        return requestingPlayer == HumanPlayer? AIOpponent : HumanPlayer;
+        return requestingPlayer == HumanPlayer ? AIOpponent : HumanPlayer;
     }
 
     private void ChangeOpponents(Player newOpponent)
@@ -86,7 +92,7 @@ public class BattleManager : MonoBehaviour
         AttackerRangedFieldScript.FieldRange = FieldRange.Ranged;
         AttackerArtilleryFieldScript.FieldRange = FieldRange.Artillery;
 
-        //Так же удостоверимс, что у полей правильные позиции
+        //Так же удостоверимся, что у полей правильные позиции
         DefenderMeleeFieldScript.FieldPositionType = FieldPositionType.Defender;
         DefenderRangedFieldScript.FieldPositionType = FieldPositionType.Defender;
         DefenderArtilleryFieldScript.FieldPositionType = FieldPositionType.Defender;
@@ -98,36 +104,47 @@ public class BattleManager : MonoBehaviour
         //Определим всё ли нормально с игроками - должен быть ровно один игрок-человек и хотя бы один противник ИИ.
         SortPlayers();
 
-        //Полезно иметь все поля в одном списке
-        fieldDictionary.Add((HumanPlayer, FieldRange.Melee), DefenderMeleeFieldScript);
-        fieldDictionary.Add((HumanPlayer, FieldRange.Ranged), DefenderRangedFieldScript);
-        fieldDictionary.Add((HumanPlayer, FieldRange.Artillery), DefenderArtilleryFieldScript);
+        //Полезно иметь все поля отсортированными по спискам
+        _defenderFieldsDictionary.Add(FieldRange.Melee, DefenderMeleeFieldScript);
+        _defenderFieldsDictionary.Add(FieldRange.Ranged, DefenderRangedFieldScript);
+        _defenderFieldsDictionary.Add(FieldRange.Artillery, DefenderArtilleryFieldScript);
 
-        fieldDictionary.Add((AIOpponent, FieldRange.Melee), AttackerMeleeFieldScript);
-        fieldDictionary.Add((AIOpponent, FieldRange.Ranged), AttackerRangedFieldScript);
-        fieldDictionary.Add((AIOpponent, FieldRange.Artillery), AttackerArtilleryFieldScript);
+        _attackerFieldsDictionary.Add(FieldRange.Melee, AttackerMeleeFieldScript);
+        _attackerFieldsDictionary.Add(FieldRange.Ranged, AttackerRangedFieldScript);
+        _attackerFieldsDictionary.Add(FieldRange.Artillery, AttackerArtilleryFieldScript);
 
-        numberOfUnits = new List<int>();
+        _positionToFieldsDictionary.Add(FieldPositionType.Defender, _defenderFieldsDictionary);
+        _positionToFieldsDictionary.Add(FieldPositionType.Attacker, _attackerFieldsDictionary);
 
+        //Выставим по умолчанию игрока защищающимся а ИИшку - атакующей
+        _playerToPositionBiDictionary.Add(HumanPlayer, FieldPositionType.Defender);
+        _playerToPositionBiDictionary.Add(AIOpponent, FieldPositionType.Attacker);
+
+        numberOfUnitsByPlayerDictionary = new Dictionary<Player, int>();
     }
 
-    public void AddUnitToTeam(int team)
+    public void AddUnitToTeam(Player owner)
     {
-        numberOfUnits[team] += 1;
+        numberOfUnitsByPlayerDictionary[owner] += 1;
     }
 
-    public int AssignPlayerToSide(Player player, FieldPositionType fieldPositionType)
+    public void AssignPlayerToSide(Player newPlayer, FieldPositionType fieldPositionType)
     {
-
-    }
-
-    public void RemoveUnitFromTeam(int team)
-    {
-        numberOfUnits[team] -= 1;
-
-        if (numberOfUnits[team] == 0)
+        //Найдем, за каким игроком закреплены в текущий момент поля
+        if (_playerToPositionBiDictionary.TryGetKeyByValue(fieldPositionType, out Player oldPlayer))
         {
-            Players[team].AddPoint(1);
+            //Если нашли старого игрока, то меняем его
+            _playerToPositionBiDictionary.ChangeKey(oldPlayer, newPlayer);
+        }
+    }
+
+    public void RemoveUnitFromTeam(Player owner)
+    {
+        numberOfUnitsByPlayerDictionary[owner] -= 1;
+
+        if (numberOfUnitsByPlayerDictionary[owner] == 0)
+        {
+            owner.AddPoint(1);
             EventBus.RaiseEvent(EventBus.EventsEnum.BattleEnd);
         }
     }
@@ -137,11 +154,11 @@ public class BattleManager : MonoBehaviour
     {
         Debug.Log("Battle has begun");
 
-        numberOfUnits.Clear();
+        numberOfUnitsByPlayerDictionary.Clear();
 
         for (int i = 0; i < Players.Length; i++)
         {
-            numberOfUnits.Add(0);
+            numberOfUnitsByPlayerDictionary.Add(Players[i], 0);
         }
 
         EventBus.RaiseEvent(EventBus.EventsEnum.BattleStart);
@@ -153,13 +170,37 @@ public class BattleManager : MonoBehaviour
     /// <param name="playerNumber"></param>
     /// <param name="fieldToAttack"></param>
     /// <returns>Список юнитов и их количество</returns>
-    public (IEnumerable<BaseUnit>, int) GetField(Player player, FieldRange fieldToInteract)
+    public (IEnumerable<BaseUnit>, int) GetFieldUnits(Player player, FieldRange fieldToInteract)
     {
-        fieldDictionary.TryGetValue((player, fieldToInteract), out var field);
-        if (field != null)
-            return (field.MainUnits, field.MainUnits.Count);
-        else
-            return (Enumerable.Empty<BaseUnit>(), 0);
+        //Сначала определим, за какую сторону играет игрок
+
+        if (!_playerToPositionBiDictionary.TryGetValueByKey(player, out var positionType))
+        {
+            Debug.LogWarning($"When executing GetField merhon, couldn't find a Player {player.PlayerName}");
+            return (new List<BaseUnit>(), 0);
+        }
+
+        //Теперь по позиции определим список полей
+        if (!_positionToFieldsDictionary.TryGetValue(positionType, out var fieldsList))
+        {
+            Debug.LogWarning($"When executing GetField merhon, couldn't find a fields for a position {positionType}");
+            return (new List<BaseUnit>(), 0);
+        }
+
+        //Найдем нужное поле по его типу
+        if (!fieldsList.TryGetValue(fieldToInteract, out var field))
+        {
+            Debug.LogWarning($"When executing GetField method, couldn't find a field in a fields list {positionType}");
+            return (new List<BaseUnit>(), 0);
+        }
+
+        //Вернём список юнитов и их количество
+        return (field.MainUnits.Concat(field.AuxUnits), field.MainUnits.Count);
+    }
+
+    public FieldPositionType GetPositionOfPlayer(Player player)
+    {
+        return _playerToPositionBiDictionary.TryGetValueByKey(player, out var positionType) ? positionType : FieldPositionType.Defender;
     }
 
 }

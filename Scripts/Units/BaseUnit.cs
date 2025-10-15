@@ -12,6 +12,8 @@ namespace HolyWar.Units
 {
     public class BaseUnit : MonoBehaviour
     {
+        private BattleManager _battleManager;
+
         public BaseStats Stats;
         [SerializeField] public int CurrentHealth { private set; get; }
         [SerializeField] private int CurrentMana;
@@ -19,6 +21,14 @@ namespace HolyWar.Units
         [SerializeField] private List<SpellSO> Spells = new();
 
         public Player Owner;
+        private Player _opponent
+        {
+            get
+            {
+                //Мы заранее не знаем, против кого воюет юнит - и поэтому он спрашивает у менеджера, кто его враг.
+                return _battleManager.GetOpponent(Owner);
+            }
+        }
 
         [Flags]
         public enum UnitState
@@ -31,7 +41,6 @@ namespace HolyWar.Units
         public UnitState States { private set; get; }
 
         public string UnitName;
-        private BattleManager _battleManager;
         private BaseUnit _target;
 
         private HealthBar _healthBar;
@@ -113,7 +122,7 @@ namespace HolyWar.Units
 
             //Остановим атаку
             CancelInvoke(nameof(InflictDamage));
-            _battleManager.RemoveUnitFromTeam(Mathf.Abs(OppositePlayerNumber - 1));
+            _battleManager.RemoveUnitFromTeam(Owner);
         }
 
         private void Start()
@@ -142,7 +151,7 @@ namespace HolyWar.Units
                 if (CurrentMana >= spell.ManaCost)
                 {
                     Debug.Log($"Unit {name} using spell {spell.name}");
-                    if (spell.Cast(Math.Abs(OppositePlayerNumber - 1), Stats.SpellPower, _battleManager))
+                    if (spell.Cast(Owner, Stats.SpellPower, _battleManager))
                     {
                         //Если каст прошёл успешно, отнимаем ману и пробиваем классический кулдаун
                         CurrentMana -= spell.ManaCost;
@@ -179,7 +188,7 @@ namespace HolyWar.Units
                 StartCoroutine(CastSpell(spell));
             }
 
-            _battleManager.AddUnitToTeam(Mathf.Abs(OppositePlayerNumber - 1));
+            _battleManager.AddUnitToTeam(Owner);
             BattleProcess(null);
         }
 
@@ -222,7 +231,7 @@ namespace HolyWar.Units
         {
             for (int i = (int)Stats.MinAttackRange; i <= (int)Stats.MaxAttackRange; i++)
             {
-                var unitsListAndCount = _battleManager.GetField(OppositePlayerNumber, (FieldRange)i);
+                var unitsListAndCount = _battleManager.GetFieldUnits(_opponent, (FieldRange)i);
                 if (unitsListAndCount.Item2 > 0)
                 {
                     int randomUnitIndex = UnityEngine.Random.Range(0, unitsListAndCount.Item2);

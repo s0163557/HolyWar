@@ -97,8 +97,8 @@ namespace HolyWar.Fields
         {
             if (mainUnits.Count > 0)
             {
-                float sign = mainUnits[0].OppositePlayerNumber;
-                if (sign == 0)
+                var battleManager = FindAnyObjectByType<BattleManager>();
+                if (battleManager.GetPositionOfPlayer(mainUnits[0].Owner) == FieldPositionType.Attacker)
                 {
                     transform.Rotate(180f, 0f, 0f);
                     redLine.transform.position = new Vector3(redLine.transform.position.x, 
