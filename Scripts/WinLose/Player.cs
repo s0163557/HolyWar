@@ -3,6 +3,7 @@ using System;
 using NUnit.Framework;
 using HolyWar.Units;
 using System.Collections.Generic;
+using HolyWar.Fields;
 
 namespace HolyWar.Diplomacy
 {
@@ -25,13 +26,73 @@ namespace HolyWar.Diplomacy
         protected EconomyConfigSO economyConfig;
 
         //Каждый игрок сам хранит информацию о своих юнитах
-        public List<BaseUnit> MeleeUnits = new List<BaseUnit>();
-        public List<BaseUnit> RangedUnits = new List<BaseUnit>();
-        public List<BaseUnit> ArtilleryUnits = new List<BaseUnit>();
+
+        [SerializeField]
+        private List<BaseUnit> _meleeUnits = new List<BaseUnit>();
+        public List<BaseUnit> MeleeUnits
+        {
+            get
+            {
+                return _meleeUnits;
+            }
+            private set
+            {
+                _meleeUnits = value;
+            }
+        }
+
+
+        [SerializeField]
+        private List<BaseUnit> _rangedUnits = new List<BaseUnit>();
+        public List<BaseUnit> RangedUnits
+        {
+            get
+            {
+                return _rangedUnits;
+            }
+            private set
+            {
+                _rangedUnits = value;
+            }
+        }
+
+
+        [SerializeField]
+        private List<BaseUnit> _artilleryUnits = new List<BaseUnit>();
+        public List<BaseUnit> ArtilleryUnits
+        {
+            get
+            {
+                return _artilleryUnits;
+            }
+            private set
+            {
+                _artilleryUnits = value;
+            }
+        }
+
+        public Action<Player, FieldRange, BaseUnit> OnUnitChange;
+        public void AddUnitToField(FieldRange fieldRange, BaseUnit unitToAdd)
+        {
+            switch (fieldRange)
+            {
+                case FieldRange.Melee:
+                    MeleeUnits.Add(unitToAdd);
+                    break;
+
+                case FieldRange.Ranged:
+                    RangedUnits.Add(unitToAdd);
+                    break;
+
+                case FieldRange.Artillery:
+                    ArtilleryUnits.Add(unitToAdd);
+                    break;
+            }
+
+            OnUnitChange.Invoke(this, fieldRange, unitToAdd);
+        }
 
         public PlayerType PlayerType;
-
-        public byte PlayerNumber;
 
         [System.NonSerialized] private Wallet _wallet;
 
@@ -60,6 +121,11 @@ namespace HolyWar.Diplomacy
 
             //Подпишемся на присвоение инкома
             EventBus.Subscribe(EventBus.EventsEnum.BattleEnd, () => { GetIncome(); });
+
+            //Убедимся, что все юниты этого игрока знают кто их владелец
+            MeleeUnits.ForEach(x => x.Owner = this);
+            RangedUnits.ForEach(x => x.Owner = this);
+            ArtilleryUnits.ForEach(x => x.Owner = this);
         }
 
         public int GetCurrentBalance()

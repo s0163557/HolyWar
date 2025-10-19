@@ -30,7 +30,7 @@ public class BattleManager : MonoBehaviour
     private Dictionary<FieldPositionType, Dictionary<FieldRange, Field>> _positionToFieldsDictionary = new Dictionary<FieldPositionType, Dictionary<FieldRange, Field>>();
     private BiDictionary<Player, FieldPositionType> _playerToPositionBiDictionary = new BiDictionary<Player, FieldPositionType>();
 
-    protected Dictionary<Player, int> numberOfUnitsByPlayerDictionary;
+    protected Dictionary<Player, int> numberOfUnitsByPlayerDictionary = new Dictionary<Player, int>();
 
     private Player[] players;
     protected Player[] Players
@@ -40,6 +40,11 @@ public class BattleManager : MonoBehaviour
 
     private Player HumanPlayer;
     private Player AIOpponent;
+
+    public Player GetHumanPlayer()
+    {
+        return HumanPlayer;
+    }
 
     public Player GetOpponent(Player requestingPlayer)
     {
@@ -120,7 +125,7 @@ public class BattleManager : MonoBehaviour
         _playerToPositionBiDictionary.Add(HumanPlayer, FieldPositionType.Defender);
         _playerToPositionBiDictionary.Add(AIOpponent, FieldPositionType.Attacker);
 
-        numberOfUnitsByPlayerDictionary = new Dictionary<Player, int>();
+        ProcessPlayers();
     }
 
     public void AddUnitToTeam(Player owner)
@@ -146,6 +151,41 @@ public class BattleManager : MonoBehaviour
         {
             owner.AddPoint(1);
             EventBus.RaiseEvent(EventBus.EventsEnum.BattleEnd);
+        }
+    }
+
+    private void UpdateUnitsInField(Player player, FieldRange changedField, BaseUnit unitToAdd)
+    {
+        if (_playerToPositionBiDictionary.TryGetValueByKey(player, out var playerPosition))
+        {
+            _positionToFieldsDictionary[playerPosition][changedField].RegisterUnitToMain(unitToAdd);
+        }
+        else
+        {
+            Debug.LogWarning("Recieved Player without his assigment in BattleManager lists");
+        }
+
+    }
+
+    private void ProcessPlayers()
+    {
+        foreach (Player player in _playerToPositionBiDictionary.GetKeys())
+        {
+            //Все юнитыд обавляются напрямую в плеера. Будем слушать их изменение и подстраивать отображение в полях соответствующимо бразом
+            player.OnUnitChange += UpdateUnitsInField;
+
+            //Выпишем всех юнитов, которые могли быть добавлены в игрока по умолчанию
+            if (_playerToPositionBiDictionary.TryGetValueByKey(player, out var playerPosition))
+            {
+                _positionToFieldsDictionary[playerPosition][FieldRange.Melee].RegisterUnitToMain(player.MeleeUnits);
+                _positionToFieldsDictionary[playerPosition][FieldRange.Ranged].RegisterUnitToMain(player.RangedUnits);
+                _positionToFieldsDictionary[playerPosition][FieldRange.Artillery].RegisterUnitToMain(player.ArtilleryUnits);
+            }
+            else
+            {
+                Debug.LogWarning("Recieved Player without his assigment in BattleManager lists");
+            }
+
         }
     }
 

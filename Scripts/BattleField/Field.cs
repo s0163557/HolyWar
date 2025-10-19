@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using System.Linq;
 
 namespace HolyWar.Fields
 {
@@ -21,7 +22,7 @@ namespace HolyWar.Fields
     }
 
     public enum FieldPositionType
-    { 
+    {
         Attacker = 0,
         Defender = 1,
     }
@@ -53,10 +54,26 @@ namespace HolyWar.Fields
         [SerializeField]
         protected float auxY;
 
+
         [SerializeField]
-        protected List<BaseUnit> mainUnits;
+        protected List<BaseUnit> mainUnits = new();
         [SerializeField]
-        protected List<BaseUnit> auxUnits;
+        protected List<BaseUnit> auxUnits = new();
+
+        private BattleManager _battleManager;
+
+        private BattleManager BattleManager
+        {
+            get
+            {
+                if (_battleManager == null)
+                {
+                    _battleManager = FindAnyObjectByType<BattleManager>();
+                }
+                return _battleManager;
+            }
+        }
+
 
         public List<BaseUnit> MainUnits { get { return mainUnits; } }
         public List<BaseUnit> AuxUnits { get { return auxUnits; } }
@@ -81,7 +98,8 @@ namespace HolyWar.Fields
 
             _killedUnits = new List<BaseUnit>();
 
-            RecalcPoses();
+            mainY = gameObject.transform.position.y + mainY;
+            auxY = gameObject.transform.position.y + auxY;
 
             mainRenderer = mainField.GetComponent<MeshRenderer>();
             auxRenderer = auxField.GetComponent<MeshRenderer>();
@@ -97,11 +115,10 @@ namespace HolyWar.Fields
         {
             if (mainUnits.Count > 0)
             {
-                var battleManager = FindAnyObjectByType<BattleManager>();
-                if (battleManager.GetPositionOfPlayer(mainUnits[0].Owner) == FieldPositionType.Attacker)
+                if (BattleManager.GetPositionOfPlayer(mainUnits[0].Owner) == FieldPositionType.Attacker)
                 {
                     transform.Rotate(180f, 0f, 0f);
-                    redLine.transform.position = new Vector3(redLine.transform.position.x, 
+                    redLine.transform.position = new Vector3(redLine.transform.position.x,
                         redLine.transform.position.y, -redLine.transform.position.z);
 
                     float tf = mainY;
@@ -109,9 +126,6 @@ namespace HolyWar.Fields
                     auxY = tf;
                 }
             }
-
-            mainY = gameObject.transform.position.y + mainY;
-            auxY = gameObject.transform.position.y + auxY;
         }
 
         public void RemoveKilledUnit(BaseUnit sender)
@@ -166,6 +180,10 @@ namespace HolyWar.Fields
         [ContextMenu("Pose Units")]
         public void PoseUnits()
         {
+            //Если поле пустое - нам нечего пересчитывать и нужно просто закрывать метод
+            if (mainUnits.Count == 0)
+                return;
+
             mainUnits[0].XCoord = 0;
             mainUnits[0].transform.position = new Vector3(mainUnits[0].XCoord, mainY);
 
@@ -177,20 +195,32 @@ namespace HolyWar.Fields
                 if (mainUnits[i] != null)
                 {
                     float cX = mainUnits[0].XCoord + step * dX;
+
                     if (cX == Mathf.Abs(mainUnits[i - 1].XCoord)) //для реверса
                         cX -= 2 * step * dX;
+
                     if (Mathf.Abs(cX) == step * dX)
                     {
                         rep += 1;
                     }
+
                     if (rep == 2)
                     {
                         step += 1;
                         rep = 0;
                     }
+
                     mainUnits[i].XCoord = cX;
                     mainUnits[i].transform.position = new Vector3(mainUnits[i].XCoord, mainY);
                 }
+            }
+        }
+
+        public void RegisterUnitToMain(IEnumerable<BaseUnit> unit)
+        {
+            foreach (var u in unit)
+            {
+                RegisterUnitToMain(u);
             }
         }
 
@@ -201,6 +231,8 @@ namespace HolyWar.Fields
 
             if (mainUnits.Count == 1) //пересчет по первому внесенному в список юниту
                 RecalcPoses();
+
+            PoseUnits();
         }
 
         public void RegisterUnitToAux(BaseUnit unit)
@@ -243,7 +275,7 @@ namespace HolyWar.Fields
             renderer.material = originalMaterial;
         }
 
-        public bool IsUnitPlacebale(BaseUnit baseUnit)
+        public bool IsUnitPlaceable(BaseUnit baseUnit)
         {
             if (baseUnit.Stats.FieldAffilation != FieldRange)
                 return false;

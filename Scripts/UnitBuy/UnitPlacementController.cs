@@ -22,6 +22,19 @@ public class UnitPlacementController : MonoBehaviour
     private GameObject _ghost;
     private Field _hoveredField;
 
+    private Player _humanPlayer;
+    private Player HumanPlayer
+    {
+        get
+        {
+            if (_humanPlayer == null)
+            {
+                _humanPlayer = _battleManager.GetHumanPlayer();
+            }
+            return _humanPlayer;
+        }
+    }
+
     private void Start()
     {
         EventBus.UnitSelection.SubscribeToEvent((GameObject selectedUnitPrefab) => { BeginPlacement(selectedUnitPrefab); },
@@ -80,8 +93,17 @@ public class UnitPlacementController : MonoBehaviour
 
         var baseUnit = _selectedPrefab.GetComponent<BaseUnit>();
         bool canPlace = false;
+
+        //Проверяем, что поле существует и что юнит существует и не равны null
         if (baseUnit && field)
-            canPlace = field.IsUnitPlacebale(baseUnit);
+        {
+            //Проверяем, что игрок ставит юнита на своё поле и что юнит вообще может на нём стоять
+            var humanPosionType = _battleManager.GetPositionOfPlayer(HumanPlayer);
+            if (field.FieldPositionType == humanPosionType && field.IsUnitPlaceable(baseUnit))
+            {
+                canPlace = true;
+            }
+        }
 
         SetGhostColor(canPlace ? _validColor : _invalidColor);
 
@@ -89,7 +111,9 @@ public class UnitPlacementController : MonoBehaviour
         {
             if (_hoveredField)
                 _hoveredField.RemoveHighlight();
+
             _hoveredField = field;
+
             if (_hoveredField)
                 _hoveredField.HighlightField(canPlace);
         }
@@ -118,16 +142,17 @@ public class UnitPlacementController : MonoBehaviour
     {
         var instantiatedUnit = Instantiate(_selectedPrefab);
         var unitComponent = instantiatedUnit.GetComponent<BaseUnit>();
+        unitComponent.Owner = HumanPlayer;
 
-        if (!unitComponent.Owner.TrySpend(unitComponent.Stats.Cost))
+        if (!HumanPlayer.TrySpend(unitComponent.Stats.Cost))
         {
             //Если денег не хватило - пробиваем отмену.
             Destroy(instantiatedUnit);
             return;
         }
 
-        field.RegisterUnitToMain(unitComponent);
-        field.PoseUnits();
+        HumanPlayer.AddUnitToField(field.FieldRange, unitComponent);
+        //field.RegisterUnitToMain(unitComponent);
         EventBus.UnitSelection.RaiseEndEvent(_selectedPrefab);
     }
 

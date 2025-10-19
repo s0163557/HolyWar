@@ -16,18 +16,42 @@ namespace Assets.Tools
         private readonly Dictionary<TKey, TValue> forward = new();
         private readonly Dictionary<TValue, TKey> reverse = new();
 
+        public IEnumerable<TKey> GetKeys()
+        {
+            return forward.Keys;
+        }
+        public IEnumerable<TValue> GetValues()
+        {
+            return reverse.Keys;
+        }
+
         public bool TryGetValueByKey(TKey key, out TValue value)
         {
+            if (key == null)
+            {
+                value = default;
+                return false;
+            }
+
             return forward.TryGetValue(key, out value);
         }
 
         public bool TryGetKeyByValue(TValue value, out TKey key)
         {
+            if (value == null)
+            {
+                key = default;
+                return false;
+            }
+
             return reverse.TryGetValue(value, out key);
         }
 
         public void Add(TKey key, TValue value)
         {
+            if (key == null)
+                return;
+
             if (forward.ContainsKey(key) || reverse.ContainsKey(value))
                 throw new ArgumentException("BiDictionary can't contain a duplicate key or value");
 

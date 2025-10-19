@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dff8135719da094ca7d92d3ce8b3542, type: 3}
   m_Name: PriestHeal
   m_EditorClassIdentifier: 
-  Name: "\u0418\u0441\u0446\u0435\u043B\u0435\u043D\u0438\u0435"
+  SpellName: Heal
   Icon: 0
   ManaCost: 10
   Cooldown: 5

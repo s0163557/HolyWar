@@ -4167,6 +4167,10 @@ PrefabInstance:
       value: Priest
       objectReference: {fileID: 0}
     - target: {fileID: 4884093749865444807, guid: 55933aa81145de647849a08dcbaa1ab6, type: 3}
+      propertyPath: Owner
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4884093749865444807, guid: 55933aa81145de647849a08dcbaa1ab6, type: 3}
       propertyPath: 'Spells.Array.data[0]'
       value: 
       objectReference: {fileID: 11400000, guid: 5f486e29f4e48c845bce73c5103c463e, type: 2}
@@ -5751,6 +5755,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Peasant
       objectReference: {fileID: 0}
+    - target: {fileID: 4884093749865444807, guid: 6273f0f7a9be999448a1886ecb218416, type: 3}
+      propertyPath: Owner
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8046523879942960481, guid: 6273f0f7a9be999448a1886ecb218416, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3
@@ -6070,6 +6078,10 @@ PrefabInstance:
     - target: {fileID: 3417247893383530214, guid: 6273f0f7a9be999448a1886ecb218416, type: 3}
       propertyPath: m_Name
       value: Peasant (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4884093749865444807, guid: 6273f0f7a9be999448a1886ecb218416, type: 3}
+      propertyPath: Owner
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8046523879942960481, guid: 6273f0f7a9be999448a1886ecb218416, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6969,6 +6981,13 @@ MonoBehaviour:
   points: 0
   teamColor: {r: 0.010380352, g: 0, b: 0.6830188, a: 1}
   economyConfig: {fileID: 11400000, guid: 6e0b7458e0db3f341b705cdcd34a8699, type: 2}
+  _meleeUnits:
+  - {fileID: 1441370227}
+  _rangedUnits:
+  - {fileID: 1648243798}
+  - {fileID: 1580826013}
+  _artilleryUnits: []
+  PlayerType: 0
   CurrentWinReward: 0
 --- !u!1 &551822168
 GameObject:
@@ -9512,10 +9531,8 @@ MonoBehaviour:
   maxX: 8.5
   mainY: 0.5
   auxY: -0.5
-  mainUnits:
-  - {fileID: 0}
+  mainUnits: []
   auxUnits: []
-  FieldRange: 2
   acceptHighlightMaterial: {fileID: 2100000, guid: 0cc134dc07b0b914dab201d194e34ba4, type: 2}
   declineHighlightMaterial: {fileID: 2100000, guid: 2548d7e886829d248822397117288543, type: 2}
 --- !u!1 &791338064
@@ -10127,7 +10144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59a1329acae61b943bb88e3f2cd3dbd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetPlayer: {fileID: 2090938648}
+  targetPlayer: {fileID: 542170446}
   valueLabel: {fileID: 827256973}
 --- !u!1 &831509866
 GameObject:
@@ -12206,10 +12223,8 @@ MonoBehaviour:
   maxX: 8.5
   mainY: 0.5
   auxY: -0.5
-  mainUnits:
-  - {fileID: 0}
+  mainUnits: []
   auxUnits: []
-  FieldRange: 2
   acceptHighlightMaterial: {fileID: 2100000, guid: 0cc134dc07b0b914dab201d194e34ba4, type: 2}
   declineHighlightMaterial: {fileID: 2100000, guid: 2548d7e886829d248822397117288543, type: 2}
 --- !u!1 &1009936054
@@ -13696,11 +13711,8 @@ MonoBehaviour:
   maxX: 8.5
   mainY: 0.5
   auxY: -0.5
-  mainUnits:
-  - {fileID: 1648243798}
-  - {fileID: 1580826013}
+  mainUnits: []
   auxUnits: []
-  FieldRange: 2
   acceptHighlightMaterial: {fileID: 2100000, guid: 0cc134dc07b0b914dab201d194e34ba4, type: 2}
   declineHighlightMaterial: {fileID: 2100000, guid: 2548d7e886829d248822397117288543, type: 2}
 --- !u!4 &1112087839
@@ -14580,10 +14592,8 @@ MonoBehaviour:
   maxX: 8.5
   mainY: 0.5
   auxY: -0.5
-  mainUnits:
-  - {fileID: 1397879608}
+  mainUnits: []
   auxUnits: []
-  FieldRange: 2
   acceptHighlightMaterial: {fileID: 2100000, guid: 0cc134dc07b0b914dab201d194e34ba4, type: 2}
   declineHighlightMaterial: {fileID: 2100000, guid: 2548d7e886829d248822397117288543, type: 2}
 --- !u!4 &1178615474
@@ -18403,6 +18413,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 227853159}
     m_Modifications:
+    - target: {fileID: 306925213743228746, guid: 1f584f5cd7821f54d80dfc3d0cfe8148, type: 3}
+      propertyPath: Owner
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3746687478060028730, guid: 1f584f5cd7821f54d80dfc3d0cfe8148, type: 3}
       propertyPath: m_Name
       value: Demon Posessed
@@ -18713,7 +18727,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _battleManager: {fileID: 2095489159}
-  _intervalBetweenBattles: 3
+  _intervalBetweenBattles: 5
   _timeLabel: {fileID: 1458146295}
 --- !u!114 &1458146295
 MonoBehaviour:
@@ -20299,6 +20313,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 227853159}
     m_Modifications:
+    - target: {fileID: -1916932917419308649, guid: a46f1a07a05f7d840b8c19fd6a81c301, type: 3}
+      propertyPath: Owner
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7725476872736112275, guid: a46f1a07a05f7d840b8c19fd6a81c301, type: 3}
       propertyPath: m_Name
       value: Imp (1)
@@ -20901,6 +20919,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 227853159}
     m_Modifications:
+    - target: {fileID: -1916932917419308649, guid: a46f1a07a05f7d840b8c19fd6a81c301, type: 3}
+      propertyPath: Owner
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7725476872736112275, guid: a46f1a07a05f7d840b8c19fd6a81c301, type: 3}
       propertyPath: m_Name
       value: Imp
@@ -21010,13 +21032,8 @@ MonoBehaviour:
   maxX: 8.5
   mainY: 0.5
   auxY: -0.5
-  mainUnits:
-  - {fileID: 1542108244}
-  - {fileID: 464839139}
-  - {fileID: 1820124397}
-  - {fileID: 1987525697}
+  mainUnits: []
   auxUnits: []
-  FieldRange: 1
   acceptHighlightMaterial: {fileID: 2100000, guid: 0cc134dc07b0b914dab201d194e34ba4, type: 2}
   declineHighlightMaterial: {fileID: 2100000, guid: 2548d7e886829d248822397117288543, type: 2}
 --- !u!4 &1659007886
@@ -23158,6 +23175,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Peasant (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 4884093749865444807, guid: 6273f0f7a9be999448a1886ecb218416, type: 3}
+      propertyPath: Owner
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8046523879942960481, guid: 6273f0f7a9be999448a1886ecb218416, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3
@@ -24983,6 +25004,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Peasant (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 4884093749865444807, guid: 6273f0f7a9be999448a1886ecb218416, type: 3}
+      propertyPath: Owner
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8046523879942960481, guid: 6273f0f7a9be999448a1886ecb218416, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3
@@ -26520,6 +26545,15 @@ MonoBehaviour:
   points: 0
   teamColor: {r: 0.7132075, g: 0, b: 0, a: 1}
   economyConfig: {fileID: 11400000, guid: 6e0b7458e0db3f341b705cdcd34a8699, type: 2}
+  _meleeUnits:
+  - {fileID: 1542108244}
+  - {fileID: 464839139}
+  - {fileID: 1820124397}
+  - {fileID: 1987525697}
+  _rangedUnits:
+  - {fileID: 1397879608}
+  _artilleryUnits: []
+  PlayerType: 1
   CurrentWinReward: 0
 --- !u!1 &2095489158
 GameObject:
@@ -26550,8 +26584,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5262b9bf0c8a1e42831c31af09fbebf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefenderPlayerNumber: 0
-  AttackerPlayerNumber: 1
   DefenderMeleeFieldScript: {fileID: 1659007885}
   DefenderRangedFieldScript: {fileID: 1178615473}
   DefenderArtilleryFieldScript: {fileID: 1004610609}
@@ -30835,10 +30867,8 @@ MonoBehaviour:
   maxX: 8.5
   mainY: 0.5
   auxY: -0.5
-  mainUnits:
-  - {fileID: 1441370227}
+  mainUnits: []
   auxUnits: []
-  FieldRange: 1
   acceptHighlightMaterial: {fileID: 2100000, guid: 0cc134dc07b0b914dab201d194e34ba4, type: 2}
   declineHighlightMaterial: {fileID: 2100000, guid: 2548d7e886829d248822397117288543, type: 2}
 --- !u!33 &7359475762139426281

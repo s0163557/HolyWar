@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dff8135719da094ca7d92d3ce8b3542, type: 3}
   m_Name: ImpFireball
   m_EditorClassIdentifier: 
-  Name: "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439 \u0448\u0430\u0440"
+  SpellName: Fireball
   Icon: 0
   ManaCost: 20
   Cooldown: 3
