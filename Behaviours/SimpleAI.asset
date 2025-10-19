@@ -1,0 +1,474 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7059778252781097657
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dd922ae02c94c87a66e46a10a7319b9, type: 3}
+  m_Name: SimpleAI Blackboard
+  m_EditorClassIdentifier: 
+  AssetID:
+    m_Value0: 11841578235897052403
+    m_Value1: 14919805429050663338
+  m_Variables:
+  - rid: 4380213979830026429
+  - rid: 4380213979830026819
+  - rid: 4380213979830026914
+  - rid: 4380213979830026949
+  - rid: 4380213979830026975
+  m_VersionTimestamp: 638965108687415560
+  m_CommandBuffer:
+    m_Commands: []
+  m_RuntimeBlackboardAsset: {fileID: -6235100544718084790}
+  references:
+    version: 2
+    RefIds:
+    - rid: 4380213979830026429
+      type: {class: 'TypedVariableModel`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 1
+          m_Value1: 0
+        Name: Self
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: {fileID: 0}
+    - rid: 4380213979830026819
+      type: {class: 'TypedVariableModel`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 3907160210855042975
+          m_Value1: 9202019695210220303
+        Name: Battle Going
+        IsExposed: 1
+        m_IsShared: 1
+        m_Value: 0
+    - rid: 4380213979830026914
+      type: {class: 'TypedVariableModel`1[[System.Collections.Generic.List`1[[UnityEngine.GameObject, UnityEngine.CoreModule]], mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 18231656212145139196
+          m_Value1: 1662319337184494393
+        Name: Melee Human Units
+        IsExposed: 1
+        m_IsShared: 1
+        m_Value: []
+    - rid: 4380213979830026949
+      type: {class: 'TypedVariableModel`1[[System.Collections.Generic.List`1[[UnityEngine.GameObject, UnityEngine.CoreModule]], mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 2030757037814731293
+          m_Value1: 182355571969433004
+        Name: Ranged Human Units
+        IsExposed: 1
+        m_IsShared: 1
+        m_Value: []
+    - rid: 4380213979830026975
+      type: {class: 'TypedVariableModel`1[[System.Collections.Generic.List`1[[UnityEngine.GameObject, UnityEngine.CoreModule]], mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 14940731433895216346
+          m_Value1: 17980717708456848913
+        Name: Artillery Human Units
+        IsExposed: 1
+        m_IsShared: 1
+        m_Value: []
+--- !u!114 &-6235100544718084790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c02bb70996b49eba31d0c206e28da24, type: 3}
+  m_Name: SimpleAI Blackboard
+  m_EditorClassIdentifier: 
+  VersionTimestamp: 638965108687415560
+  AssetID:
+    m_Value0: 11841578235897052403
+    m_Value1: 14919805429050663338
+  m_Blackboard:
+    m_Variables:
+    - rid: 4380213979830026430
+    - rid: 4380213979830026820
+    - rid: 4380213979830026915
+    - rid: 4380213979830026950
+    - rid: 4380213979830026976
+  m_SharedBlackboardVariableGuids:
+  - m_Value0: 3907160210855042975
+    m_Value1: 9202019695210220303
+  - m_Value0: 18231656212145139196
+    m_Value1: 1662319337184494393
+  - m_Value0: 2030757037814731293
+    m_Value1: 182355571969433004
+  - m_Value0: 14940731433895216346
+    m_Value1: 17980717708456848913
+  references:
+    version: 2
+    RefIds:
+    - rid: 4380213979830026430
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 1
+          m_Value1: 0
+        Name: Self
+        m_Value: {fileID: 0}
+    - rid: 4380213979830026820
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 3907160210855042975
+          m_Value1: 9202019695210220303
+        Name: Battle Going
+        m_Value: 0
+    - rid: 4380213979830026915
+      type: {class: 'BlackboardVariable`1[[System.Collections.Generic.List`1[[UnityEngine.GameObject, UnityEngine.CoreModule]], mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 18231656212145139196
+          m_Value1: 1662319337184494393
+        Name: Melee Human Units
+        m_Value: []
+    - rid: 4380213979830026950
+      type: {class: 'BlackboardVariable`1[[System.Collections.Generic.List`1[[UnityEngine.GameObject, UnityEngine.CoreModule]], mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 2030757037814731293
+          m_Value1: 182355571969433004
+        Name: Ranged Human Units
+        m_Value: []
+    - rid: 4380213979830026976
+      type: {class: 'BlackboardVariable`1[[System.Collections.Generic.List`1[[UnityEngine.GameObject, UnityEngine.CoreModule]], mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 14940731433895216346
+          m_Value1: 17980717708456848913
+        Name: Artillery Human Units
+        m_Value: []
+--- !u!114 &-5914967195660462099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b27bb6d9a2c8d540a10dff10acc543e, type: 3}
+  m_Name: SimpleAI Debug Info
+  m_EditorClassIdentifier: 
+  m_CodeBreakPointsList: []
+--- !u!114 &-5321441394015818137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db920e62f70f420bb33c771449926fa4, type: 3}
+  m_Name: SimpleAI
+  m_EditorClassIdentifier: 
+  Graphs:
+  - rid: 4380213979830026990
+  RootGraph:
+    rid: 4380213979830026990
+  m_DebugInfo: {fileID: -5914967195660462099}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 4380213979830026990
+      type: {class: BehaviorGraphModule, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        AuthoringAssetID:
+          m_Value0: 11841578235897052403
+          m_Value1: 14919805429050663338
+        m_DebugInfo: {fileID: 0}
+        BlackboardReference:
+          rid: 4380213979830026991
+        BlackboardGroupReferences: []
+        Root:
+          rid: 4380213979830026992
+        m_ActiveNodes: []
+        m_NodesToTick: []
+        m_NodesToEnd:
+          rid: 4380213979830026993
+        m_EndedNodes:
+          rid: 4380213979830026994
+        m_VersionTimestamp: 638965108687814426
+    - rid: 4380213979830026991
+      type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        m_Blackboard:
+          rid: 4380213979830026995
+        m_Source: {fileID: -6235100544718084790}
+    - rid: 4380213979830026992
+      type: {class: Start, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        ID:
+          m_Value0: 692860569179605119
+          m_Value1: 12590483839548350382
+        Graph:
+          rid: 4380213979830026990
+        m_Parent:
+          rid: -2
+        m_Child:
+          rid: 4380213979830026996
+        Repeat: 0
+        AllowMultipleRepeatsPerTick: 0
+    - rid: 4380213979830026993
+      type: {class: 'Stack`1[[Unity.Behavior.Node, Unity.Behavior]]', ns: System.Collections.Generic, asm: mscorlib}
+      data: 
+    - rid: 4380213979830026994
+      type: {class: 'HashSet`1[[Unity.Behavior.Node, Unity.Behavior]]', ns: System.Collections.Generic, asm: System.Core}
+      data: 
+    - rid: 4380213979830026995
+      type: {class: Blackboard, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        m_Variables:
+        - rid: 4380213979830026997
+        - rid: 4380213979830026998
+        - rid: 4380213979830026999
+        - rid: 4380213979830027000
+        - rid: 4380213979830027001
+    - rid: 4380213979830026996
+      type: {class: ConditionalGuardAction, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        ID:
+          m_Value0: 16171536238749080458
+          m_Value1: 3873331701841723539
+        Graph:
+          rid: 4380213979830026990
+        m_Parent:
+          rid: 4380213979830026992
+        m_Conditions:
+        - rid: 4380213979830027002
+        m_RequiresAllConditions: 0
+    - rid: 4380213979830026997
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 1
+          m_Value1: 0
+        Name: Self
+        m_Value: {fileID: 0}
+    - rid: 4380213979830026998
+      type: {class: 'SharedBlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 3907160210855042975
+          m_Value1: 9202019695210220303
+        Name: Battle Going
+        m_Value: 0
+        m_SharedVariablesRuntimeAsset: {fileID: -6235100544718084790}
+    - rid: 4380213979830026999
+      type: {class: 'SharedBlackboardVariable`1[[System.Collections.Generic.List`1[[UnityEngine.GameObject, UnityEngine.CoreModule]], mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 18231656212145139196
+          m_Value1: 1662319337184494393
+        Name: Melee Human Units
+        m_Value: []
+        m_SharedVariablesRuntimeAsset: {fileID: -6235100544718084790}
+    - rid: 4380213979830027000
+      type: {class: 'SharedBlackboardVariable`1[[System.Collections.Generic.List`1[[UnityEngine.GameObject, UnityEngine.CoreModule]], mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 2030757037814731293
+          m_Value1: 182355571969433004
+        Name: Ranged Human Units
+        m_Value: []
+        m_SharedVariablesRuntimeAsset: {fileID: -6235100544718084790}
+    - rid: 4380213979830027001
+      type: {class: 'SharedBlackboardVariable`1[[System.Collections.Generic.List`1[[UnityEngine.GameObject, UnityEngine.CoreModule]], mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 14940731433895216346
+          m_Value1: 17980717708456848913
+        Name: Artillery Human Units
+        m_Value: []
+        m_SharedVariablesRuntimeAsset: {fileID: -6235100544718084790}
+    - rid: 4380213979830027002
+      type: {class: NoActiveBattleCondition, ns: , asm: Assembly-CSharp}
+      data:
+        Graph:
+          rid: 4380213979830026990
+        Battle:
+          rid: 4380213979830026998
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bad8f2220607dac4db5082ff333fafb8, type: 3}
+  m_Name: SimpleAI
+  m_EditorClassIdentifier: 
+  Blackboard: {fileID: -7059778252781097657}
+  m_Description: 
+  m_Nodes:
+  - rid: 4380213979830026427
+  - rid: 4380213979830026438
+  m_VersionTimestamp: 638965108687814426
+  m_DebugInfo: {fileID: -5914967195660462099}
+  m_RuntimeGraph: {fileID: -5321441394015818137}
+  AssetID:
+    m_Value0: 11841578235897052403
+    m_Value1: 14919805429050663338
+  Story:
+    Story: 
+    StoryVariableNames: []
+    Variables: []
+  m_NodeModelsInfo:
+  - Name: On Start
+    Story: 
+    RuntimeTypeID:
+      m_Value0: 3335272451348827663
+      m_Value1: 11549843281177505721
+    Variables: []
+    NamedChildren: []
+  - Name: Conditional Guard
+    Story: 
+    RuntimeTypeID:
+      m_Value0: 10845871997924083670
+      m_Value1: 4041440894818793834
+    Variables: []
+    NamedChildren: []
+  m_Blackboards: []
+  m_MainBlackboardAuthoringAsset: {fileID: -7059778252781097657}
+  m_CommandBuffer:
+    m_Commands: []
+  m_SubgraphsInfo: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 4380213979830026427
+      type: {class: StartNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        Position: {x: 220.00008, y: -3.9999998}
+        ID:
+          m_Value0: 692860569179605119
+          m_Value1: 12590483839548350382
+        Parents: []
+        PortModels:
+        - rid: 4380213979830026428
+        NodeType:
+          m_SerializableType: Unity.Behavior.Start, Unity.Behavior, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        NodeTypeID:
+          m_Value0: 3335272451348827663
+          m_Value1: 11549843281177505721
+        m_FieldValues: []
+        Repeat: 0
+        AllowMultipleRepeatsPerTick: 0
+    - rid: 4380213979830026428
+      type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        m_Name: OutputPort
+        m_PortDataFlowType: 1
+        m_IsFloating: 0
+        m_NodeModel:
+          rid: 4380213979830026427
+        m_Connections:
+        - rid: 4380213979830026439
+    - rid: 4380213979830026438
+      type: {class: ConditionalGuardNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        Position: {x: 219.82254, y: 140.10004}
+        ID:
+          m_Value0: 16171536238749080458
+          m_Value1: 3873331701841723539
+        Parents: []
+        PortModels:
+        - rid: 4380213979830026439
+        - rid: 4380213979830026440
+        NodeType:
+          m_SerializableType: Unity.Behavior.ConditionalGuardAction, Unity.Behavior,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        NodeTypeID:
+          m_Value0: 10845871997924083670
+          m_Value1: 4041440894818793834
+        m_FieldValues: []
+        <ConditionModels>k__BackingField:
+        - rid: 4380213979830026533
+        <RequiresAllConditionsTrue>k__BackingField: 0
+        <ShouldTruncateNodeUI>k__BackingField: 0
+    - rid: 4380213979830026439
+      type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        m_Name: InputPort
+        m_PortDataFlowType: 0
+        m_IsFloating: 0
+        m_NodeModel:
+          rid: 4380213979830026438
+        m_Connections:
+        - rid: 4380213979830026428
+    - rid: 4380213979830026440
+      type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        m_Name: OutputPort
+        m_PortDataFlowType: 1
+        m_IsFloating: 0
+        m_NodeModel:
+          rid: 4380213979830026438
+        m_Connections: []
+    - rid: 4380213979830026533
+      type: {class: ConditionModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        ConditionType:
+          m_SerializableType: NoActiveBattleCondition, Assembly-CSharp, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        ConditionTypeID:
+          m_Value0: 16577181533676563788
+          m_Value1: 5505133484037964106
+        NodeModel:
+          rid: 4380213979830026438
+        m_FieldValues:
+        - rid: 4380213979830026543
+        OperatorFieldModel:
+          rid: -2
+    - rid: 4380213979830026543
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: Battle
+        Type:
+          m_SerializableType: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        LocalValue:
+          rid: 4380213979830026545
+        LinkedVariable:
+          rid: 4380213979830026903
+    - rid: 4380213979830026545
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: 0
+    - rid: 4380213979830026903
+      type: {class: 'TypedVariableModel`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 3907160210855042975
+          m_Value1: 9202019695210220303
+        Name: Battle Going
+        IsExposed: 1
+        m_IsShared: 1
+        m_Value: 0

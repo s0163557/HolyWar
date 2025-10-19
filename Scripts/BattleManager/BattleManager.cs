@@ -32,6 +32,8 @@ public class BattleManager : MonoBehaviour
 
     protected Dictionary<Player, int> numberOfUnitsByPlayerDictionary = new Dictionary<Player, int>();
 
+    public bool IsBattleRunning = false;
+
     private Player[] players;
     protected Player[] Players
     {
@@ -150,7 +152,7 @@ public class BattleManager : MonoBehaviour
         if (numberOfUnitsByPlayerDictionary[owner] == 0)
         {
             owner.AddPoint(1);
-            EventBus.RaiseEvent(EventBus.EventsEnum.BattleEnd);
+            EndBattle();
         }
     }
 
@@ -189,10 +191,17 @@ public class BattleManager : MonoBehaviour
         }
     }
 
+    public void EndBattle()
+    {
+        EventBus.RaiseEvent(EventBus.EventsEnum.BattleEnd);
+        IsBattleRunning = false;
+    }
+
     [ContextMenu("Start Battle")]
     public void StartBattle()
     {
         Debug.Log("Battle has begun");
+        IsBattleRunning = true;
 
         numberOfUnitsByPlayerDictionary.Clear();
 

@@ -1,9 +1,6 @@
-using System;
 using System.Collections;
-using System.Threading;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class BattleTimer : MonoBehaviour
 {
@@ -16,16 +13,7 @@ public class BattleTimer : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _timeLabel;
 
-
     private float _timeRemaining;
-    private bool _isCountingDown;
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-
-    }
 
     public IEnumerator BattleCountdown()
     {
