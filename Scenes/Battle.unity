@@ -26590,6 +26590,7 @@ MonoBehaviour:
   AttackerMeleeFieldScript: {fileID: 7284327976589474027}
   AttackerRangedFieldScript: {fileID: 1112087838}
   AttackerArtilleryFieldScript: {fileID: 765882319}
+  IsBattleRunning: 0
 --- !u!4 &2095489160
 Transform:
   m_ObjectHideFlags: 0
